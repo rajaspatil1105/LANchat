@@ -1,0 +1,10 @@
+fastapi
+uvicorn[standard]
+streamlit
+requests
+bcrypt
+python-jose[cryptography]
+websockets
+pydantic
+python-dotenv
+python-multipart

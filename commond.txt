@@ -1,0 +1,9 @@
+TERMINAL 1 - To Start the Backend
+
+.\.venv\Scripts\Activate.ps1
+python -m uvicorn backend.main:app --reload
+
+TERMINAL 2 - To start the Frontend
+
+.\.venv\Scripts\Activate.ps1
+python -m streamlit run frontend/app.py

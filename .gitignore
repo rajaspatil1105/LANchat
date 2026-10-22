@@ -1,0 +1,14 @@
+.env
+chat_db.sqlite
+backend/uploads/
+__pycache__/
+*.pyc
+.venv/
+
+# logs & archives
+*.log
+*.zip
+
+# project docs & submission (not part of the code repo)
+docs/
+קבצי הגשה/

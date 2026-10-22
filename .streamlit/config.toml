@@ -1,0 +1,20 @@
+# Streamlit configuration. On a host like Render the platform supplies $PORT;
+# locally Streamlit defaults to 8501.
+[server]
+headless = true
+enableCORS = false
+enableXsrfProtection = false
+
+[browser]
+gatherUsageStats = false
+
+[client]
+toolbarMode = "minimal"
+
+[theme]
+base = "light"
+primaryColor = "#6366f1"
+backgroundColor = "#f7f8fc"
+secondaryBackgroundColor = "#ffffff"
+textColor = "#1e2233"
+font = "sans serif"

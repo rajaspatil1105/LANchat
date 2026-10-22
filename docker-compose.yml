@@ -1,0 +1,49 @@
+# [FEATURE] OPTIONAL container deployment for SimpleChat.
+#
+# Two services built from the same image, wired together on an internal Docker
+# network — NO external/cloud service is required. The graded default remains
+# plain localhost (uvicorn + streamlit); this file is an extra, not a
+# replacement. See docs/deployment.md.
+services:
+  backend:
+    build: .
+    command: python -m uvicorn backend.main:app --host 0.0.0.0 --port 8000
+    environment:
+      # SECRET_KEY MUST be supplied (auth.py fails fast on a placeholder). Set it
+      # in a .env file next to this compose file, or export it before "up".
+      SECRET_KEY: ${SECRET_KEY:?Set SECRET_KEY (e.g. python -c \"import secrets;print(secrets.token_hex(32))\")}
+      ALGORITHM: HS256
+      ACCESS_TOKEN_EXPIRE_MINUTES: "60"
+      DATABASE_URL: /data/chat_db.sqlite
+      # Allow the frontend container's browser origin through CORS.
+      ALLOWED_ORIGINS: http://localhost:8501,http://127.0.0.1:8501
+      ENABLE_OAUTH: "false"   # default OFF — username+password only
+    volumes:
+      - chat_data:/data          # persist the SQLite DB across restarts
+    ports:
+      - "8000:8000"              # exposed for convenience / direct API testing
+    networks:
+      - simplechat
+
+  frontend:
+    build: .
+    command: streamlit run frontend/app.py --server.port 8501 --server.address 0.0.0.0
+    environment:
+      # The browser talks to the backend; on a single host this is localhost:8000.
+      # (Inside the compose network the service name "backend" also resolves, but
+      # the Streamlit client runs in the user's browser, so localhost is correct
+      # for the default single-host deploy.)
+      SIMPLECHAT_API_URL: http://127.0.0.1:8000
+    ports:
+      - "8501:8501"
+    depends_on:
+      - backend
+    networks:
+      - simplechat
+
+volumes:
+  chat_data:
+
+networks:
+  simplechat:
+    driver: bridge
